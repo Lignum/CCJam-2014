@@ -1,5 +1,4 @@
 # SimpleScript Concept
-===
 
 ## Language structure:
 
