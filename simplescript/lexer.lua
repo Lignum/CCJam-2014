@@ -31,10 +31,9 @@ function Lexer:parseFunctionCall(funcCall)
 		info = info:gsub("%s+", "")
 		local funcTable = {}
 		
-		for call in info:gmatch("[^,]+") do
+		for call in info:gmatch("[^;]+") do
 			local paramsTable = {}
 			local name,params,repetition = call:match("(%w+)%s-%[(.-)]%s-%*?%s-(%d*)")
-			assert(name, "nameless function")
 			
 			params = params:gsub("%s+", "")
 			
@@ -88,7 +87,7 @@ function Lexer:tokenise(str)
 	
 	local lineCount = 0
 	
-	for line in str:gmatch("[^\n;]+") do
+	for line in str:gmatch("[^\n]+") do
 		lineCount = lineCount + 1
 		
 		local okay, err = pcall(function()
@@ -102,7 +101,10 @@ function Lexer:tokenise(str)
 				local call = self:getFunctionCall(line)
 				if call then
 					table.insert(self.parseTree, self:parseFunctionCall(call))
+					return
 				end
+				
+				error("syntax error", 0)
 			end
 		end)
 		

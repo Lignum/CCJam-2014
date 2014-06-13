@@ -1,0 +1,17 @@
+local function isAdvanced()
+	return term.isColour()
+end
+
+local function isTurtle()
+	return turtle ~= nil
+end
+
+local function isPocket()
+	return pocket ~= nil
+end
+
+return { 
+	["isAdvanced"] = isAdvanced, 
+	["isTurtle"] = isTurtle, 
+	["isPocket"] = isPocket 
+}

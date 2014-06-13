@@ -4,13 +4,16 @@ end
 
 local SIMPLE_SCRIPT_DIR = shell.resolve("simplescript")
 local Lexer = require("simplescript/lexer.lua")
+local Interpreter = require("simplescript/interpreter.lua")
+
 local localLexer = Lexer.new()
+local localInterpreter = Interpreter.new()
 
 local function runString(str)
 	localLexer:clear()
 	local err = localLexer:tokenise(str)
 	if err ~= nil then printError(err) end
-	print(textutils.serialise(localLexer.parseTree))
+	localInterpreter:interpret(localLexer.parseTree)
 end
 
 local function runFile(file)
@@ -39,6 +42,9 @@ local termColour = term.isColour() and colours.yellow or colours.white
 
 term.setTextColour(termColour)
 print("SimpleScript v1.0 Console")
+
+localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/computer"))
+localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/terminal"))
 
 while true do
 	term.setTextColour(termColour)

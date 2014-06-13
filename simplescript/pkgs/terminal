@@ -1,0 +1,47 @@
+local function doPrint(text)
+	print(text)
+end
+
+local function write(text)
+	term.write(text)
+end
+
+local function clear()
+	term.clear()
+end
+
+local function clearLine()
+	term.clearLine()
+end
+
+local function setCursorPos(x, y)
+	term.setCursorPos(x, y)
+end
+
+local function setBackgroundColour(col)
+	term.setBackgroundColour(colours[col])
+end
+
+local function setTextColour(col)
+	term.setTextColour(colours[col])
+end
+
+local function setBackgroundColor(col)
+	term.setBackgroundColor(colors[col])
+end
+
+local function setTextColor(col)
+	term.setTextColor(colors[col])
+end
+
+return {
+	["print"] = doPrint,
+	["write"] = write,
+	["setCursorPos"] = setCursorPos,
+	["setBackgroundColour"] = setBackgroundColour,
+	["setBackgroundColor"] = setBackgroundColor,
+	["setTextColour"] = setTextColour,
+	["setTextColor"] = setTextColor,
+	["clear"] = clear,
+	["clearLine"] = clearLine
+}
