@@ -7,6 +7,7 @@ local Lexer = require("simplescript/lexer.lua")
 local localLexer = Lexer.new()
 
 local function runString(str)
+	localLexer:clear()
 	local err = localLexer:tokenise(str)
 	if err ~= nil then printError(err) end
 	print(textutils.serialise(localLexer.parseTree))
@@ -42,9 +43,10 @@ print("SimpleScript v1.0 Console")
 while true do
 	term.setTextColour(termColour)
 	write("> ")
-
+	
 	term.setTextColour(colours.white)
 	local input = read(nil, history)
+	if input:lower() == "clear" then localLexer:clear() end
 	table.insert(history, input)
 	runString(input)
 	

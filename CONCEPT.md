@@ -22,17 +22,17 @@ Statements include:
 * perhaps / maybe - 'elseif' equivalent.
 * repeat / do - 'for' equivalent.
 
-Blocks are ended Python-style by indenting its contents and begun with a colon.
+Blocks are ended Python-style by indenting its contents.
 E.g:
 
 ```
-perchance { computer: isAdvanced[] }:
+perchance { computer: isAdvanced[] }
 	terminal: print ["Hello World. This computer is very advanced."]
 ```
 
 perchance example:
 ```
-perchance { turtle: detect[] }:
+perchance { turtle: detect[] }
 	terminal: print ["Found a block in front!"]
 ```
 	
@@ -40,13 +40,13 @@ repeat examples:
 
 Repeat five times:
 ```
-repeat { 5 }:
+repeat { 5 }
 	terminal: print ["Yo."]
 ```
 
 While loop:
 ```
-repeat while !{ turtle: detectDown[] }:
+repeat while !{ turtle: detectDown[] }
 	move: forward[]
 ```
 
@@ -66,7 +66,7 @@ terminal: print ["Parameters!"] *4
 
 ## Example program:
 ```
-perchance { computer: isTurtle[] }:
+perchance { computer: isTurtle[] }
 	move: forward[] *2, up[] *4, down[]
 otherwise:
 	terminal: print ["This program can only run on a turtle!"]

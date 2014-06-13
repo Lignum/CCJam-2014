@@ -20,6 +20,8 @@ function Lexer.new()
 end
 
 function Lexer:parseFunctionCall(funcCall)
+	if allowRepeat == nil then allowRepeat = true end
+	
 	local pkg, callInfo = funcCall:match("(%w+):(.+)")
 	callInfo = trim(callInfo)
 	
@@ -60,16 +62,24 @@ function Lexer:getFunctionCall(line)
 end
 
 function Lexer:getStatement(line)
-	local statement = line:match("%w+%s-{%s-.-%s-}:")
+	local statement = line:match("%w+%s-{%s-.-%s-}")
 	return statement
 end
 
 function Lexer:parseStatement(line)
-	local type, condition = line:match("(%w+)%s-{%s-(.-)%s-}:")
+	local type, condition = line:match("(%w+)%s-{%s-(.-)%s-}")
 	condition = condition:gsub("%s+", "")
+	
+	if self:getFunctionCall(condition) then
+		condition = self:parseFunctionCall(condition)
+	end
 	
 	local tbl = { ["type"] = "statement", ["kind"] = type, ["condition"] = condition }
 	return tbl
+end
+
+function Lexer:clear()
+	self.parseTree = {}
 end
 
 function Lexer:tokenise(str)
@@ -84,13 +94,13 @@ function Lexer:tokenise(str)
 		local okay, err = pcall(function()
 			if not startsWith(line, "//") and not startsWith(line, "#") and not startsWith(line, "--") then		
 				local statement = self:getStatement(line)
-				if statement ~= nil then
+				if statement then
 					table.insert(self.parseTree, self:parseStatement(line))
 					return
 				end
 				
 				local call = self:getFunctionCall(line)
-				if call ~= nil then
+				if call then
 					table.insert(self.parseTree, self:parseFunctionCall(call))
 				end
 			end
