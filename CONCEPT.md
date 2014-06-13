@@ -31,12 +31,12 @@ perchance { computer: isAdvanced }:
 ### Functions:
 Functions are called with this syntax (<> = required, {} = optional):
 ```
-<function package>: <function name> {[<parameters>]} {*<amount of times to repeat>}[, ..., ...]
+<function package>: <function name> [<parameters>] {*<amount of times to repeat>}[, ..., ...]
 ```
 
 For example:
 ```
-move: down *2, forward *4
+move: down[] *2, forward[] *4
 terminal: print ["Parameters!"] *4
 ```
 
@@ -45,7 +45,7 @@ terminal: print ["Parameters!"] *4
 ## Example program:
 ```
 perchance { computer: isTurtle }:
-	move: forward *2, up *4, down
+	move: forward[] *2, up[] *4, down[]
 otherwise:
 	terminal: print ["This program can only run on a turtle!"]
 ```
