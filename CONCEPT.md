@@ -12,8 +12,9 @@ Examples for such packages are:
 * computer - Contains computer functions like file management or checking what computer family it belongs to.
 * network - A rednet interface.
 
-### Blocks and Statements:
+Lines are ended with either a new line or a semicolon.
 
+### Blocks and Statements:
 Statements include:
 * perchance / if - 'if' equivalent.
 * otherwise / else - 'else' equivalent.
@@ -23,12 +24,11 @@ Blocks are ended Python-style by indenting its contents and begun with a colon.
 E.g:
 
 ```
-perchance computer: isAdvanced:
+perchance { computer: isAdvanced }:
 	terminal: print ["Hello World. This computer is very advanced."]
 ```
 
 ### Functions:
-
 Functions are called with this syntax (<> = required, {} = optional):
 ```
 <function package>: <function name> {[<parameters>]} {x<amount of times to repeat>}[, ..., ...]
@@ -43,9 +43,8 @@ terminal: print ["Parameters!"] x4
 **To keep things simple there are no user-defined functions!**
 
 ## Example program:
-
 ```
-perchance computer: isTurtle:
+perchance { computer: isTurtle }:
 	move: forward x2, up x4, down
 otherwise:
 	terminal: print ["This program can only run on a turtle!"]
