@@ -4,9 +4,12 @@ end
 
 local SIMPLE_SCRIPT_DIR = shell.resolve("simplescript")
 local Lexer = require("simplescript/lexer.lua")
+local localLexer = Lexer.new()
 
 local function runString(str)
-	
+	local err = localLexer:tokenise(str)
+	if err ~= nil then printError(err) end
+	print(textutils.serialise(localLexer.parseTree))
 end
 
 local function runFile(file)
@@ -30,4 +33,20 @@ if not fs.exists(SIMPLE_SCRIPT_DIR) or not fs.isDir(SIMPLE_SCRIPT_DIR) then
 	return
 end
 
+local history = {}
+local termColour = term.isColour() and colours.yellow or colours.white
+
+term.setTextColour(termColour)
 print("SimpleScript v1.0 Console")
+
+while true do
+	term.setTextColour(termColour)
+	write("> ")
+
+	term.setTextColour(colours.white)
+	local input = read(nil, history)
+	table.insert(history, input)
+	runString(input)
+	
+	if input:lower() == "exit" then break end
+end
