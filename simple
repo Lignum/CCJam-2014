@@ -1,0 +1,33 @@
+local function require(file)
+	return dofile(shell.resolve(file))
+end
+
+local SIMPLE_SCRIPT_DIR = shell.resolve("simplescript")
+local Lexer = require("simplescript/lexer.lua")
+
+local function runString(str)
+	
+end
+
+local function runFile(file)
+	local f = fs.open(file, "r")
+	local str = f.readAll()
+	runString(str)
+	f.close()
+end
+
+local argv = { ... }
+local argc = #argv
+
+if argc ~= 0 then
+	local file = argv[1]
+	-- TODO: Execute file.
+	return
+end
+
+if not fs.exists(SIMPLE_SCRIPT_DIR) or not fs.isDir(SIMPLE_SCRIPT_DIR) then
+	printError("Couldn't find the simplescript core files!")
+	return
+end
+
+print("SimpleScript v1.0 Console")
