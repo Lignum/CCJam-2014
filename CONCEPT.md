@@ -3,8 +3,7 @@
 ## Language structure:
 
 ### General:
-**//, # and -- can be used to comment out lines.**
-
+//, # and -- can be used to comment out lines.
 Every script is supplied with "function packages".
 Examples for such packages are:
 * move - Contains basic movement functions for turtles.
@@ -24,7 +23,6 @@ Statements include:
 
 Blocks are ended Python-style by indenting its contents.
 E.g:
-
 ```
 perchance { computer: isAdvanced[] }
 	terminal: print ["Hello World. This computer is very advanced."]
@@ -36,8 +34,7 @@ perchance { turtle: detect[] }
 	terminal: print ["Found a block in front!"]
 ```
 	
-repeat examples:
-
+#### repeat examples:
 Repeat five times:
 ```
 repeat { 5 }
