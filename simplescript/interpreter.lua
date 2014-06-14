@@ -34,6 +34,7 @@ local function parseParams(params)
 	for _,v in ipairs(params) do
 		local str = v:match("^\"(.-)\"")
 		if str ~= nil then
+			str = str:gsub(string.char(6), ",")
 			table.insert(tbl, str)
 		else
 			if tonumber(v) ~= nil then
@@ -78,12 +79,13 @@ function Interpreter:getStatementType(statement)
 	return nil
 end
 
-function Interpreter:interpret(parseTree)
+function Interpreter:interpret(parseTree, printRetValues)
 	for _,v in ipairs(parseTree) do
 		if v.type == "call" then
 			for _,j in ipairs(v.funcs) do
 				for i=1,j.repetition or 1 do
-					self:callFunction(v.pkg, j, j.params)
+					local retVal = self:callFunction(v.pkg, j, j.params)
+					if retVal ~= nil and printRetValues then print(retVal) end
 				end
 			end
 		elseif v.type == "statement" then

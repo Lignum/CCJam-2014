@@ -6,6 +6,16 @@ local function startsWith(str, start)
 	return str:sub(1, #start) == start
 end
 
+local function removeSpaces(str)
+	local inQuote = false
+	local newStr = ""
+	for i=1,#str do
+		local c = str:sub(i, i)
+		if (c == ' ' and not inQuote) or c ~= ' ' then newStr = newStr  .. c end
+	end
+	return newStr
+end
+
 local function trim(str)
 	return str:gsub("^%s+", "")
 end
@@ -28,14 +38,15 @@ function Lexer:parseFunctionCall(funcCall)
 	local tbl = { ["type"] = "call", ["pkg"] = pkg, funcs = {} }
 	
 	local function parseCallInfo(info)
-		info = info:gsub("%s+", "")
+		info = removeSpaces(info)
 		local funcTable = {}
 		
 		for call in info:gmatch("[^;]+") do
 			local paramsTable = {}
 			local name,params,repetition = call:match("(%w+)%s-%[(.-)]%s-%*?%s-(%d*)")
 			
-			params = params:gsub("%s+", "")
+			params = params:gsub(",+", string.char(6))
+			params = removeSpaces(params)
 			
 			for param in params:gmatch("[^,]+") do
 				table.insert(paramsTable, param)
@@ -56,18 +67,18 @@ function Lexer:parseFunctionCall(funcCall)
 end
 
 function Lexer:getFunctionCall(line)
-	local call = line:match("%w+:.+")
+	local call = line:match("^%w+:.+$")
 	return call
 end
 
 function Lexer:getStatement(line)
-	local statement = line:match("%w+%s-{%s-.-%s-}")
+	local statement = line:match("^%w+%s-{%s-.-%s-}$")
 	return statement
 end
 
 function Lexer:parseStatement(line)
 	local type, condition = line:match("(%w+)%s-{%s-(.-)%s-}")
-	condition = condition:gsub("%s+", "")
+	condition = removeSpaces(condition)
 	
 	if self:getFunctionCall(condition) then
 		condition = self:parseFunctionCall(condition)
