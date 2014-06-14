@@ -28,6 +28,10 @@ end
 localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/computer", "Dimitri"))
 localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/terminal"))
 
+if turtle then
+	localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/turtle"))
+end
+
 local argv = { ... }
 local argc = #argv
 
@@ -43,7 +47,7 @@ if not fs.exists(SIMPLE_SCRIPT_DIR) or not fs.isDir(SIMPLE_SCRIPT_DIR) then
 end
 
 local history = {}
-local termColour = term.isColour() and colours.yellow or colours.white
+local termColour = term.isColour() and colours.green or colours.white
 
 term.setTextColour(termColour)
 print("SimpleScript v1.0 Console")
