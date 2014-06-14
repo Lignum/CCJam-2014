@@ -43,7 +43,7 @@ local termColour = term.isColour() and colours.yellow or colours.white
 term.setTextColour(termColour)
 print("SimpleScript v1.0 Console")
 
-localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/computer"))
+localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/computer", "Dimitri"))
 localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/terminal"))
 
 while true do
