@@ -54,9 +54,8 @@ while true do
 	
 	term.setTextColour(colours.white)
 	local input = read(nil, history)
+	if input:lower() == "exit" then break end
 	if input:lower() == "clear" then localLexer:clear() end
 	table.insert(history, input)
 	runString(input, true)
-	
-	if input:lower() == "exit" then break end
 end
