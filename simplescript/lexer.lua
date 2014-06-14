@@ -6,12 +6,17 @@ local function startsWith(str, start)
 	return str:sub(1, #start) == start
 end
 
-local function removeSpaces(str)
+local function removeRespectQuote(str, ch, replacement)
 	local inQuote = false
 	local newStr = ""
 	for i=1,#str do
 		local c = str:sub(i, i)
-		if (c == ' ' and not inQuote) or c ~= ' ' then newStr = newStr  .. c end
+		if c == '"' then inQuote = not inQuote end
+		if inQuote and c == ch then
+			newStr = newStr .. (replacement or ch)
+		elseif c ~= ch then
+			newStr = newStr .. c
+		end
 	end
 	return newStr
 end
@@ -38,15 +43,15 @@ function Lexer:parseFunctionCall(funcCall)
 	local tbl = { ["type"] = "call", ["pkg"] = pkg, funcs = {} }
 	
 	local function parseCallInfo(info)
-		info = removeSpaces(info)
+		info = removeRespectQuote(info, ' ')
 		local funcTable = {}
 		
 		for call in info:gmatch("[^;]+") do
 			local paramsTable = {}
 			local name,params,repetition = call:match("(%w+)%s-%[(.-)]%s-%*?%s-(%d*)")
 			
-			params = params:gsub(",+", string.char(6))
-			params = removeSpaces(params)
+			params = removeRespectQuote(params, ',', string.char(6))
+			params = removeRespectQuote(params, ' ')
 			
 			for param in params:gmatch("[^,]+") do
 				table.insert(paramsTable, param)
@@ -78,7 +83,7 @@ end
 
 function Lexer:parseStatement(line)
 	local type, condition = line:match("(%w+)%s-{%s-(.-)%s-}")
-	condition = removeSpaces(condition)
+	condition = removeRespectQuote(condition, ' ')
 	
 	if self:getFunctionCall(condition) then
 		condition = self:parseFunctionCall(condition)

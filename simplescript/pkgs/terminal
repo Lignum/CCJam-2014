@@ -1,5 +1,5 @@
-local function doPrint(text)
-	print(text)
+local function doPrint(...)
+	print(...)
 end
 
 local function write(text)
