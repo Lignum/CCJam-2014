@@ -67,7 +67,7 @@ function Lexer:parseFunctionCall(funcCall)
 end
 
 function Lexer:getFunctionCall(line)
-	local call = line:match("^%w+:.+$")
+	local call = line:match("%w+:.+")
 	return call
 end
 
