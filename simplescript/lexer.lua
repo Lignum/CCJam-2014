@@ -72,7 +72,7 @@ function Lexer:getFunctionCall(line)
 end
 
 function Lexer:getStatement(line)
-	local statement = line:match("^%w+%s-{%s-.-%s-}$")
+	local statement = line:match("%w+%s-{%s-.-%s-}")
 	return statement
 end
 
