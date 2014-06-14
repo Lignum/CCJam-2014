@@ -9,8 +9,9 @@ local Interpreter = require("simplescript/interpreter.lua")
 local localLexer = Lexer.new()
 local localInterpreter = Interpreter.new()
 
-local function runString(str)
-	localLexer:clear()
+local function runString(str, clearLexer)
+	if clearLexer == nil then clearLexer = false end
+	if clearLexer then localLexer:clear() end
 	local err = localLexer:tokenise(str)
 	if err ~= nil then printError(err) end
 	--print(textutils.serialise(localLexer.parseTree))
@@ -24,12 +25,15 @@ local function runFile(file)
 	f.close()
 end
 
+localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/computer", "Dimitri"))
+localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/terminal"))
+
 local argv = { ... }
 local argc = #argv
 
 if argc ~= 0 then
 	local file = argv[1]
-	-- TODO: Execute file.
+	runFile(shell.resolve(file))
 	return
 end
 
@@ -44,9 +48,6 @@ local termColour = term.isColour() and colours.yellow or colours.white
 term.setTextColour(termColour)
 print("SimpleScript v1.0 Console")
 
-localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/computer", "Dimitri"))
-localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/terminal"))
-
 while true do
 	term.setTextColour(termColour)
 	write("> ")
@@ -55,7 +56,7 @@ while true do
 	local input = read(nil, history)
 	if input:lower() == "clear" then localLexer:clear() end
 	table.insert(history, input)
-	runString(input)
+	runString(input, true)
 	
 	if input:lower() == "exit" then break end
 end
