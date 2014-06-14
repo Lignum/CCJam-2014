@@ -13,6 +13,7 @@ local function runString(str)
 	localLexer:clear()
 	local err = localLexer:tokenise(str)
 	if err ~= nil then printError(err) end
+	--print(textutils.serialise(localLexer.parseTree))
 	localInterpreter:interpret(localLexer.parseTree, true)
 end
 

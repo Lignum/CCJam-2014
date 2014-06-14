@@ -34,6 +34,10 @@ local function setTextColor(col)
 	term.setTextColor(colors[col])
 end
 
+local function setCursorBlink(blink)
+	term.setCursorBlink(blink)
+end
+
 return {
 	["print"] = doPrint,
 	["write"] = write,
@@ -43,5 +47,6 @@ return {
 	["setTextColour"] = setTextColour,
 	["setTextColor"] = setTextColor,
 	["clear"] = clear,
-	["clearLine"] = clearLine
+	["clearLine"] = clearLine,
+	["setCursorBlink"] = setCursorBlink
 }

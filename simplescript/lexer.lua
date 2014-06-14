@@ -21,6 +21,21 @@ local function removeRespectQuote(str, ch, replacement)
 	return newStr
 end
 
+local function fixCommas(str)
+	local inQuote = false
+	local newStr = ""
+	for i=1,#str do
+		local c = str:sub(i, i)
+		if c == '"' then inQuote = not inQuote end
+		if inQuote and c == ch then
+			newStr = newStr .. (replacement or ch)
+		else
+			newStr = newStr .. c
+		end
+	end
+	return newStr
+end
+
 local function trim(str)
 	return str:gsub("^%s+", "")
 end
@@ -50,7 +65,7 @@ function Lexer:parseFunctionCall(funcCall)
 			local paramsTable = {}
 			local name,params,repetition = call:match("(%w+)%s-%[(.-)]%s-%*?%s-(%d*)")
 			
-			params = removeRespectQuote(params, ',', string.char(6))
+			params = fixCommas(params)
 			params = removeRespectQuote(params, ' ')
 			
 			for param in params:gmatch("[^,]+") do
