@@ -28,7 +28,7 @@ function Interpreter:getPackageFunction(pkg, func)
 	return nil
 end
 
-local function parseParams(params)
+local function parseParams(params, line)
 	local tbl = {}
 	
 	for _,v in ipairs(params) do
@@ -45,7 +45,7 @@ local function parseParams(params)
 				elseif v == "false" then
 					table.insert(tbl, false)
 				else
-					error("invalid parameter!")
+					error(line .. ": invalid parameter!", 0)
 				end
 			end
 		end
@@ -54,13 +54,13 @@ local function parseParams(params)
 	return tbl
 end
 
-function Interpreter:callFunction(pkg, func, params)
+function Interpreter:callFunction(pkg, func, params, line)
 	local name = func.name
 	local funct = self:getPackageFunction(pkg, name)
 	if funct == nil then
-		error("package '" .. tostring(pkg) .. "' has no function named '" .. tostring(name) .. "'")
+		error(line .. ": package '" .. tostring(pkg) .. "' has no function named '" .. tostring(name) .. "'", 0)
 	end
-	return funct(unpack(parseParams(params)))
+	return funct(unpack(parseParams(params, line)))
 end
 
 local statements = {
@@ -99,30 +99,36 @@ end
 
 function Interpreter:interpret(parseTree, printRetValues)
 	for _,v in ipairs(parseTree) do
-		if v.type == "call" then
-			for _,j in ipairs(v.funcs) do
-				for i=1,j.repetition or 1 do
-					local retVal = self:callFunction(v.pkg, j, j.params)
-					if retVal ~= nil and printRetValues then print(retVal) end
+		local ok, err = pcall(function()
+			if v.type == "call" then
+				for _,j in ipairs(v.funcs) do
+					for i=1,j.repetition or 1 do
+						local retVal = self:callFunction(v.pkg, j, j.params, v.line)
+						if retVal ~= nil and printRetValues then print(retVal) end
+					end
 				end
-			end
-		elseif v.type == "statement" then
-			if statements[v.kind] == "conditional" then
-				local func = v.condition.funcs[1]
-				local retVal = self:callFunction(v.condition.pkg, func, func.params)
-				
-				if retVal then
-					self:interpret(v.body, printRetValues)
-				else
-					local otherwise = self:findOtherwise(v.body)
-					if otherwise then
-						if otherwise.body == nil then
-							error(otherwise.line .. ": otherwise has no body")
+			elseif v.type == "statement" then
+				if statements[v.kind] == "conditional" then
+					local func = v.condition.funcs[1]
+					local retVal = self:callFunction(v.condition.pkg, func, func.params, v.line)
+					
+					if retVal then
+						self:interpret(v.body, printRetValues)
+					else
+						local otherwise = self:findOtherwise(v.body)
+						if otherwise then
+							if otherwise.body == nil then
+								error(otherwise.line .. ": otherwise has no body")
+							end
+							self:interpret(otherwise.body, printRetValues)
 						end
-						self:interpret(otherwise.body, printRetValues)
 					end
 				end
 			end
+		end)
+		
+		if not ok then
+			printError(err)
 		end
 	end
 end
