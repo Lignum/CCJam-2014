@@ -19,6 +19,7 @@ return {
 	["pixel"] = pixel,
 	
 	["rect"] = function(x, y, w, h, colour)
+		assert(x ~= nil and y ~= nil and w ~= nil and h ~= nil, "rect[x, y, width, height, <colour>]")
 		for i=x,x+w-1 do
 			for j=y,y+h-1 do
 				pixel(i, j, colour)
