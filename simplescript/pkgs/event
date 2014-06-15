@@ -1,0 +1,31 @@
+return {
+	["waitForKey"] = function(key)
+		assert(key, "waitForKey[key]")
+		while true do
+			local _,code = os.pullEvent("key")
+			if code == keys[key] then break end
+		end
+	end,
+	
+	["waitForChar"] = function(char)
+		assert(char, "waitForChar[char]")
+		while true do
+			local _,c = os.pullEvent("char")
+			if c == char then break end
+		end
+	end,
+	
+	["waitForMouse"] = function(x, y, button)
+		assert(x ~= nil and y ~= nil, "waitForMouse[x, y, <button>]")
+		while true do
+			local _,btn,px,py = os.pullEvent("mouse_click")
+			if px == x and py == y then
+				if button ~= nil then
+					if btn == button then break end
+				else
+					break
+				end
+			end
+		end
+	end
+}
