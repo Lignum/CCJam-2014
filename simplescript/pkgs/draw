@@ -1,0 +1,28 @@
+local function getColour(txt)
+	return colours[txt] or colors[txt]
+end
+
+local function pixel(x, y, colour, char, charColour)
+	assert(x ~= nil and y ~= nil, "draw[x, y, <colour>, <char>, <charColour>")
+		
+	colour = getColour(colour)
+	charColour = getColour(charColour)
+	
+	term.setCursorPos(x, y)
+	if colour ~= nil then term.setBackgroundColour(colour) end
+	char = char or ' '
+	if charColour ~= nil then term.setTextColour(charColour) end
+	term.write(char)
+end
+
+return {
+	["pixel"] = pixel,
+	
+	["rect"] = function(x, y, w, h, colour)
+		for i=x,x+w-1 do
+			for j=y,y+h-1 do
+				pixel(i, j, colour)
+			end
+		end
+	end
+}
