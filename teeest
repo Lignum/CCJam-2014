@@ -1,5 +1,11 @@
-perchance { computer: isTurtle[] }
+perchance { computer: isAdvanced[] }
   terminal: print["Hello World"]
   
-  perchance { computer: isAdvanced[] }
-    terminal: print["Yes. Turtle"]
+  perchance { computer: isTurtle[] }
+    terminal: print["Yes. Turtle."]
+    
+    otherwise:
+      terminal: print["No. Not Turtle."]
+  
+  otherwise:
+    terminal: print["Not very advanced are we?"]

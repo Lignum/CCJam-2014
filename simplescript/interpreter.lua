@@ -72,6 +72,31 @@ local statements = {
 	["do"] = "loop"
 }
 
+function Interpreter:findStatement(parent, depth)
+	for i=#parent,1,-1 do
+		if parent[i].depth < depth then
+			if parent[i].body == nil then
+				parent[i].body = {}
+			else
+				local attempt = self:findFunctionSpace(parent[i].body, depth)
+				if attempt ~= nil then
+					return attempt
+				end
+			end
+
+			return parent[i]
+		end
+	end
+end
+
+function Interpreter:findOtherwise(body)
+	for i,v in ipairs(body) do
+		if v.type == "label" and v.name == "otherwise" then
+			return v
+		end
+	end
+end
+
 function Interpreter:interpret(parseTree, printRetValues)
 	for _,v in ipairs(parseTree) do
 		if v.type == "call" then
@@ -85,8 +110,17 @@ function Interpreter:interpret(parseTree, printRetValues)
 			if statements[v.kind] == "conditional" then
 				local func = v.condition.funcs[1]
 				local retVal = self:callFunction(v.condition.pkg, func, func.params)
+				
 				if retVal then
 					self:interpret(v.body, printRetValues)
+				else
+					local otherwise = self:findOtherwise(v.body)
+					if otherwise then
+						if otherwise.body == nil then
+							error(otherwise.line .. ": otherwise has no body")
+						end
+						self:interpret(otherwise.body, printRetValues)
+					end
 				end
 			end
 		end

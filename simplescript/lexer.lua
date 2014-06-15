@@ -54,8 +54,6 @@ function Lexer.new()
 end
 
 function Lexer:parseFunctionCall(funcCall, depth, lineNum)
-	if allowRepeat == nil then allowRepeat = true end
-	
 	local pkg, callInfo = funcCall:match("(%w+):(.+)")
 	callInfo = trim(callInfo)
 	
@@ -95,6 +93,22 @@ end
 function Lexer:getFunctionCall(line)
 	local call = line:match("%w+:.+")
 	return call
+end
+
+function Lexer:parseLabel(line, depth, lineNum)
+	local name = line:match("(%w+):")
+	local tbl = { 
+		["name"] = name,
+		["depth"] = depth,
+		["line"] = lineNum,
+		["type"] = "label"
+	}
+	return tbl
+end
+
+function Lexer:getLabel(line)
+	local label = line:match("%w+:%s-$")
+	return label
 end
 
 function Lexer:getStatement(line)
@@ -185,9 +199,15 @@ function Lexer:tokenise(str)
 					return
 				end
 				
+				local label = self:getLabel(line)
+				if label then
+					table.insert(tbl, self:parseLabel(line, depth, lineCount))
+					return
+				end
+				
 				local call = self:getFunctionCall(line)
 				if call then
-					table.insert(tbl, self:parseFunctionCall(call, depth, lineCount))
+					table.insert(tbl, self:parseFunctionCall(line, depth, lineCount))
 					return
 				end
 				

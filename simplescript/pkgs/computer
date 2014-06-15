@@ -10,7 +10,12 @@ local function isPocket()
 	return pocket ~= nil
 end
 
+local function isComputer()
+	return not isTurtle() and not isPocket() 
+end
+
 return { 
+	["isComputer"] = isComputer,
 	["isAdvanced"] = isAdvanced, 
 	["isTurtle"] = isTurtle, 
 	["isPocket"] = isPocket 
