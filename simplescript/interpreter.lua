@@ -44,6 +44,8 @@ local function parseParams(params, line)
 					table.insert(tbl, true)
 				elseif v == "false" then
 					table.insert(tbl, false)
+				elseif v == "nil" then
+					table.insert(tbl, nil)
 				else
 					error(line .. ": invalid parameter!", 0)
 				end

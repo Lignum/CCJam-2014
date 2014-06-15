@@ -1,0 +1,51 @@
+return {
+	["send"] = function(id, msg, protocol)
+		assert(id ~= nil and msg ~= nil, "send[id, message, <protocol>]")
+		rednet.send(id, msg, protocol)
+	end,
+	
+	["host"] = function(protocol, hostname)
+		assert(protocol ~= nil and hostname ~= nil, "host[protocol, hostname]")
+		rednet.host(protocol, hostname)
+	end,
+	
+	["unhost"] = function(protocol, hostname)
+		assert(protocol ~= nil and hostname ~= nil, "unhost[protocol, hostname]")
+		rednet.unhost(protocol, hostname)
+	end,
+	
+	["waitFor"] = function(msg, timeout, protocolFilter, id)
+		assert(msg, "waitFor[message, <timeout>, <protcol filter>, <id>]")
+
+		while true do
+			local _id,_msg = rednet.receive(protocolFilter, timeout)
+			
+			if msg == _msg then
+				if id ~= nil then
+					if id == _id then break end
+				else
+					break
+				end
+			end
+		end
+	end,
+	
+	["broadcast"] = function(msg, protocol)
+		assert(msg, "broadcast[message, <protocol>]")
+	end,
+	
+	["isOpen"] = function(side)
+		assert(side, "isOpen[side]")
+		return rednet.isOpen(side)
+	end,
+	
+	["open"] = function(side)
+		assert(side, "open[side]")
+		rednet.open(side)
+	end,
+	
+	["close"] = function(side)
+		assert(close, "close[side]")
+		rednet.close(side)
+	end
+}
