@@ -1,0 +1,8 @@
+terminal: clear[]
+terminal: setCursorPos[1, 1]
+
+perchance { computer: isAdvanced[] }
+  terminal: setTextColour["black"]
+  terminal: setBackgroundColour["white"]
+  
+terminal: print["Hello World!"]

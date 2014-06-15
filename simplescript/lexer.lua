@@ -21,6 +21,10 @@ local function removeRespectQuote(str, ch, replacement)
 	return newStr
 end
 
+local function isEmpty(line)
+	return line:match("^%s-$") ~= nil
+end
+
 local function fixCommas(str)
 	local inQuote = false
 	local newStr = ""
@@ -49,7 +53,7 @@ function Lexer.new()
 	return self
 end
 
-function Lexer:parseFunctionCall(funcCall)
+function Lexer:parseFunctionCall(funcCall, depth)
 	if allowRepeat == nil then allowRepeat = true end
 	
 	local pkg, callInfo = funcCall:match("(%w+):(.+)")
@@ -83,6 +87,7 @@ function Lexer:parseFunctionCall(funcCall)
 	end
 	
 	tbl["funcs"] = parseCallInfo(callInfo)
+	tbl["depth"] = depth
 	return tbl
 end
 
@@ -96,7 +101,7 @@ function Lexer:getStatement(line)
 	return statement
 end
 
-function Lexer:parseStatement(line)
+function Lexer:parseStatement(line, depth)
 	local type, condition = line:match("(%w+)%s-{%s-(.-)%s-}")
 	condition = removeRespectQuote(condition, ' ')
 	
@@ -104,7 +109,12 @@ function Lexer:parseStatement(line)
 		condition = self:parseFunctionCall(condition)
 	end
 	
-	local tbl = { ["type"] = "statement", ["kind"] = type, ["condition"] = condition }
+	local tbl = { 
+		["type"] = "statement", 
+		["kind"] = type, 
+		["condition"] = condition,
+		["depth"] = depth 
+	}
 	return tbl
 end
 
@@ -112,26 +122,61 @@ function Lexer:clear()
 	self.parseTree = {}
 end
 
+function Lexer:getLineDepth(line)
+	local depth = 0
+	
+	for i=1,#line do
+		local c = line:sub(i, i)
+		if c == '\t' or c == ' ' then
+			depth = depth + 1
+		else
+			return depth
+		end
+	end
+end
+
 function Lexer:tokenise(str)
 	-- Please do prepare for incredible hardcoding.
 	-- But it's a jam, so it's alright ;).
 	
 	local lineCount = 0
+	local previousDepth = 0
 	
 	for line in str:gmatch("[^\n]+") do
 		lineCount = lineCount + 1
 		
 		local okay, err = pcall(function()
-			if not startsWith(line, "//") and not startsWith(line, "#") and not startsWith(line, "--") then		
+			if not isEmpty(line) and not startsWith(line, "//") and not startsWith(line, "#") and not startsWith(line, "--") then		
+				local tbl = nil
+				local depth = self:getLineDepth(line)
+
+				if depth == 0 then
+					tbl = self.parseTree
+				else
+					for i=#self.parseTree,1,-1 do
+						if self.parseTree[i].depth < depth then
+							if self.parseTree[i].body == nil then
+								self.parseTree[i].body = {}
+							end
+
+							tbl = self.parseTree[i].body
+							break
+						else
+							error("no matching statement", 0)
+						end
+					end
+				end
+	
 				local statement = self:getStatement(line)
 				if statement then
-					table.insert(self.parseTree, self:parseStatement(line))
+					print(depth)
+					table.insert(tbl, self:parseStatement(line, depth))
 					return
 				end
 				
 				local call = self:getFunctionCall(line)
 				if call then
-					table.insert(self.parseTree, self:parseFunctionCall(call))
+					table.insert(tbl, self:parseFunctionCall(call, depth))
 					return
 				end
 				
