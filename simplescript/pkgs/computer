@@ -14,9 +14,14 @@ local function isComputer()
 	return not isTurtle() and not isPocket() 
 end
 
+local function doSleep(time)
+	sleep(time)
+end
+
 return { 
 	["isComputer"] = isComputer,
 	["isAdvanced"] = isAdvanced, 
 	["isTurtle"] = isTurtle, 
-	["isPocket"] = isPocket 
+	["isPocket"] = isPocket,
+	["sleep"] = doSleep
 }

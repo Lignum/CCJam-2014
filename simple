@@ -14,10 +14,10 @@ local function runString(str, clearLexer)
 	if clearLexer then localLexer:clear() end
 	local err = localLexer:tokenise(str)
 	if err ~= nil then printError(err) end
-	local file = fs.open("parseTree.txt", "w")
+	--[[local file = fs.open("parseTree.txt", "w")
 	file.write(textutils.serialise(localLexer.parseTree))
-	file.close()
-	localInterpreter:interpret(localLexer.parseTree, true)
+	file.close()]]
+	localInterpreter:interpret(localLexer.parseTree, false)
 end
 
 local function runFile(file)
@@ -30,6 +30,7 @@ end
 
 localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/computer", "Dimitri"))
 localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/terminal"))
+localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/simple"))
 
 if turtle then
 	localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/turtle"))

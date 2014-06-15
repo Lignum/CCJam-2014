@@ -1,0 +1,3 @@
+repeat { computer: isAdvanced[] }
+  terminal: print["Hello World"]
+  computer: sleep[0.2]

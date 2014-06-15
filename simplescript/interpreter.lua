@@ -66,8 +66,6 @@ end
 local statements = {
 	["perchance"] = "conditional",
 	["if"] = "conditional",
-	["otherwise"] = "conditional_contradictory",
-	["else"] = "conditional_contradictory",
 	["repeat"] = "loop",
 	["do"] = "loop"
 }
@@ -121,6 +119,20 @@ function Interpreter:interpret(parseTree, printRetValues)
 								error(otherwise.line .. ": otherwise has no body")
 							end
 							self:interpret(otherwise.body, printRetValues)
+						end
+					end
+				elseif statements[v.kind] == "loop" then
+					local func = v.condition.funcs[1]
+					local retVal = self:callFunction(v.condition.pkg, func, func.params, v.line)
+					
+					if type(retVal) == "number" then
+						for i=1,retVal do
+							self:interpret(v.body, printRetValues)
+						end
+					elseif type(retVal) == "boolean" then
+						while retVal do
+							self:interpret(v.body, printRetValues)
+							retVal = self:callFunction(v.condition.pkg, func, func.params, v.line)
 						end
 					end
 				end
