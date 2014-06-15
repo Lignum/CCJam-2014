@@ -1,5 +1,8 @@
 # SimpleScript Concept
 
+## IMPORTANT:
+This file should not be used as documentation as the concept is a little different from the actual language! Check the wiki instead.
+
 ## Language structure:
 
 ### General:
@@ -68,6 +71,4 @@ perchance { computer: isTurtle[] }
 otherwise:
 	terminal: print ["This program can only run on a turtle!"]
 ```
-
-
 
