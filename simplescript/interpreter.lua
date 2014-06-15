@@ -64,20 +64,13 @@ function Interpreter:callFunction(pkg, func, params)
 end
 
 local statements = {
-	["conditional"] = { "perchance", "if" },
-	["conditional_contradictory"] = { "otherwise", "else" },
-	["conditional_conditional_contradictory"] = { "perhaps", "maybe" },
-	["loop"] = { "repeat", "do" }
+	["perchance"] = "conditional",
+	["if"] = "conditional",
+	["otherwise"] = "conditional_contradictory",
+	["else"] = "conditional_contradictory",
+	["repeat"] = "loop",
+	["do"] = "loop"
 }
-
-function Interpreter:getStatementType(statement)
-	for k,v in pairs(statements) do
-		if v[statement] ~= nil then
-			return k
-		end
-	end
-	return nil
-end
 
 function Interpreter:interpret(parseTree, printRetValues)
 	for _,v in ipairs(parseTree) do
@@ -89,9 +82,13 @@ function Interpreter:interpret(parseTree, printRetValues)
 				end
 			end
 		elseif v.type == "statement" then
-			--[[if self:getStatementType(v.kind) == "conditional" then
-				
-			end]]
+			if statements[v.kind] == "conditional" then
+				local func = v.condition.funcs[1]
+				local retVal = self:callFunction(v.condition.pkg, func, func.params)
+				if retVal then
+					self:interpret(v.body, printRetValues)
+				end
+			end
 		end
 	end
 end

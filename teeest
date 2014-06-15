@@ -1,0 +1,5 @@
+perchance { computer: isTurtle[] }
+  terminal: print["Hello World"]
+  
+  perchance { computer: isAdvanced[] }
+    terminal: print["Yes. Turtle"]

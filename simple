@@ -14,9 +14,9 @@ local function runString(str, clearLexer)
 	if clearLexer then localLexer:clear() end
 	local err = localLexer:tokenise(str)
 	if err ~= nil then printError(err) end
-	--[[local file = fs.open("parseTree.txt", "w")
+	local file = fs.open("parseTree.txt", "w")
 	file.write(textutils.serialise(localLexer.parseTree))
-	file.close()]]
+	file.close()
 	localInterpreter:interpret(localLexer.parseTree, true)
 end
 

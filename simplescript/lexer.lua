@@ -53,7 +53,7 @@ function Lexer.new()
 	return self
 end
 
-function Lexer:parseFunctionCall(funcCall, depth)
+function Lexer:parseFunctionCall(funcCall, depth, lineNum)
 	if allowRepeat == nil then allowRepeat = true end
 	
 	local pkg, callInfo = funcCall:match("(%w+):(.+)")
@@ -88,6 +88,7 @@ function Lexer:parseFunctionCall(funcCall, depth)
 	
 	tbl["funcs"] = parseCallInfo(callInfo)
 	tbl["depth"] = depth
+	tbl["line"] = lineNum
 	return tbl
 end
 
@@ -101,7 +102,7 @@ function Lexer:getStatement(line)
 	return statement
 end
 
-function Lexer:parseStatement(line, depth)
+function Lexer:parseStatement(line, depth, lineNum)
 	local type, condition = line:match("(%w+)%s-{%s-(.-)%s-}")
 	condition = removeRespectQuote(condition, ' ')
 	
@@ -113,7 +114,8 @@ function Lexer:parseStatement(line, depth)
 		["type"] = "statement", 
 		["kind"] = type, 
 		["condition"] = condition,
-		["depth"] = depth 
+		["depth"] = depth,
+		["line"] = lineNum
 	}
 	return tbl
 end
@@ -131,6 +133,23 @@ function Lexer:getLineDepth(line)
 			depth = depth + 1
 		else
 			return depth
+		end
+	end
+end
+
+function Lexer:findFunctionSpace(parent, depth)
+	for i=#parent,1,-1 do
+		if parent[i].depth < depth then
+			if parent[i].body == nil then
+				parent[i].body = {}
+			else
+				local attempt = self:findFunctionSpace(parent[i].body, depth)
+				if attempt ~= nil then
+					return attempt
+				end
+			end
+
+			return parent[i].body
 		end
 	end
 end
@@ -153,30 +172,22 @@ function Lexer:tokenise(str)
 				if depth == 0 then
 					tbl = self.parseTree
 				else
-					for i=#self.parseTree,1,-1 do
-						if self.parseTree[i].depth < depth then
-							if self.parseTree[i].body == nil then
-								self.parseTree[i].body = {}
-							end
-
-							tbl = self.parseTree[i].body
-							break
-						else
-							error("no matching statement", 0)
-						end
+					tbl = self:findFunctionSpace(self.parseTree, depth)
+					
+					if tbl == nil then
+						error("no matching statement", 0)
 					end
 				end
 	
 				local statement = self:getStatement(line)
 				if statement then
-					print(depth)
-					table.insert(tbl, self:parseStatement(line, depth))
+					table.insert(tbl, self:parseStatement(line, depth, lineCount))
 					return
 				end
 				
 				local call = self:getFunctionCall(line)
 				if call then
-					table.insert(tbl, self:parseFunctionCall(call, depth))
+					table.insert(tbl, self:parseFunctionCall(call, depth, lineCount))
 					return
 				end
 				
