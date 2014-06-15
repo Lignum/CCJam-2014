@@ -31,8 +31,8 @@ local function fixCommas(str)
 	for i=1,#str do
 		local c = str:sub(i, i)
 		if c == '"' then inQuote = not inQuote end
-		if inQuote and c == ch then
-			newStr = newStr .. (replacement or ch)
+		if inQuote and c == ',' then
+			newStr = newStr .. string.char(6)
 		else
 			newStr = newStr .. c
 		end
