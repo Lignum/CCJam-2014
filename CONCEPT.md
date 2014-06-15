@@ -1,7 +1,7 @@
 # SimpleScript Concept
 
 ## IMPORTANT:
-This file should not be used as documentation as the concept is a little different from the actual language! Check the wiki instead.
+This file should not be used as documentation as the concept is a little different from the actual language! Check out the [wiki](https://github.com/GeorgeMcKinlay/CCJam/wiki) instead.
 
 ## Language structure:
 
