@@ -32,12 +32,9 @@ local function runFile(file)
 	f.close()
 end
 
-localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/computer", "Dimitri"))
-localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/terminal"))
-localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/simple"))
-
-if turtle then
-	localInterpreter:loadPackage(shell.resolve("simplescript/pkgs/turtle"))
+local packages = fs.list(shell.resolve("simplescript/pkgs"))
+for i,v in ipairs(packages) do
+	localInterpreter:loadPackage(shell.resolve("simplescript/pkgs") .. "/" .. v)	
 end
 
 local argv = { ... }

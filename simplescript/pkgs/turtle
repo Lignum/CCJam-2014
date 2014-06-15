@@ -18,56 +18,60 @@ local function hasEnoughFuel(n)
 	return turtle.getFuelLevel() >= n
 end
 
-return {
-	["craft"] = turtle.craft,
-	["select"] = turtle.select,
-	["isSlotSelected"] = isSlotSelected,
-	
-	["hasMoreThan"] = hasMoreThan,
-	["hasLessThan"] = hasLessThan,
-	["hasExactly"] = hasExactly,
-	
-	["equipLeft"] = turtle.equipLeft,
-	["equipRight"] = turtle.equipRight,
-	
-	["attack"] = turtle.attack,
-	["attackUp"] = turtle.attackUp,
-	["attackDown"] = turtle.attackDown,
-	
-	["dig"] = turtle.dig,
-	["digUp"] = turtle.digUp,
-	["digDown"] = turtle.digDown,
+if turtle then
+	return {
+		["craft"] = turtle.craft,
+		["select"] = turtle.select,
+		["isSlotSelected"] = isSlotSelected,
+		
+		["hasMoreThan"] = hasMoreThan,
+		["hasLessThan"] = hasLessThan,
+		["hasExactly"] = hasExactly,
+		
+		["equipLeft"] = turtle.equipLeft,
+		["equipRight"] = turtle.equipRight,
+		
+		["attack"] = turtle.attack,
+		["attackUp"] = turtle.attackUp,
+		["attackDown"] = turtle.attackDown,
+		
+		["dig"] = turtle.dig,
+		["digUp"] = turtle.digUp,
+		["digDown"] = turtle.digDown,
 
-	["place"] = turtle.place,
-	["placeUp"] = turtle.placeUp,
-	["placeDown"] = turtle.placeDown,
-	
-	["detect"] = turtle.detect,
-	["detectUp"] = turtle.detectUp,
-	["detectDown"] = turtle.detectDown,
-	
-	["compare"] = turtle.compare,
-	["compareUp"] = turtle.compareUp,
-	["compareDown"] = turtle.compareDown,
-	["compareTo"] = turtle.compareTo,
-	
-	["drop"] = turtle.drop,
-	["dropUp"] = turtle.dropUp,
-	["dropDown"] = turtle.dropDown,
-	
-	["suck"] = turtle.suck,
-	["suckUp"] = turtle.suckUp,
-	["suckDown"] = turtle.suckDown,
-	
-	["refuel"] = turtle.refuel,
-	["hasEnoughFuel"] = hasEnoughFuel,
-	["transferTo"] = turtle.transferTo,
-	
-	["forward"] = turtle.forward,
-	["up"] = turtle.up,
-	["back"] = turtle.back,
-	["down"] = turtle.down,
-	
-	["turnLeft"] = turtle.turnLeft,
-	["turnRight"] = turtle.turnRight
-}
+		["place"] = turtle.place,
+		["placeUp"] = turtle.placeUp,
+		["placeDown"] = turtle.placeDown,
+		
+		["detect"] = turtle.detect,
+		["detectUp"] = turtle.detectUp,
+		["detectDown"] = turtle.detectDown,
+		
+		["compare"] = turtle.compare,
+		["compareUp"] = turtle.compareUp,
+		["compareDown"] = turtle.compareDown,
+		["compareTo"] = turtle.compareTo,
+		
+		["drop"] = turtle.drop,
+		["dropUp"] = turtle.dropUp,
+		["dropDown"] = turtle.dropDown,
+		
+		["suck"] = turtle.suck,
+		["suckUp"] = turtle.suckUp,
+		["suckDown"] = turtle.suckDown,
+		
+		["refuel"] = turtle.refuel,
+		["hasEnoughFuel"] = hasEnoughFuel,
+		["transferTo"] = turtle.transferTo,
+		
+		["forward"] = turtle.forward,
+		["up"] = turtle.up,
+		["back"] = turtle.back,
+		["down"] = turtle.down,
+		
+		["turnLeft"] = turtle.turnLeft,
+		["turnRight"] = turtle.turnRight
+	}
+else
+	return {}
+end
