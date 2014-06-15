@@ -21,7 +21,7 @@ local function runString(str, clearLexer)
 	--[[local file = fs.open("parseTree.txt", "w")
 	file.write(textutils.serialise(localLexer.parseTree))
 	file.close()]]
-	localInterpreter:interpret(localLexer.parseTree, false)
+	localInterpreter:interpret(localLexer.parseTree, true)
 end
 
 local function runFile(file)

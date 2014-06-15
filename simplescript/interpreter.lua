@@ -96,6 +96,11 @@ function Interpreter:findOtherwise(body)
 end
 
 function Interpreter:interpret(parseTree, printRetValues)
+	if parseTree == nil then
+		printError("?: missing body")
+		return
+	end
+	
 	for _,v in ipairs(parseTree) do
 		local ok, err = pcall(function()
 			if v.type == "call" then
@@ -107,34 +112,43 @@ function Interpreter:interpret(parseTree, printRetValues)
 				end
 			elseif v.type == "statement" then
 				if statements[v.kind] == "conditional" then
+					if v.body == nil then
+						error(v.line .. ": missing body", 0)
+					end
+					
 					local func = v.condition.funcs[1]
 					local retVal = self:callFunction(v.condition.pkg, func, func.params, v.line)
 					
 					if retVal then
-						self:interpret(v.body, printRetValues)
+						self:interpret(v.body, false)
 					else
 						local otherwise = self:findOtherwise(v.body)
 						if otherwise then
 							if otherwise.body == nil then
 								error(otherwise.line .. ": otherwise has no body")
 							end
-							self:interpret(otherwise.body, printRetValues)
+							self:interpret(otherwise.body, false)
 						end
 					end
 				elseif statements[v.kind] == "loop" then
+					if v.body == nil then
+						error(v.line .. ": missing body", 0)
+					end
 					local func = v.condition.funcs[1]
 					local retVal = self:callFunction(v.condition.pkg, func, func.params, v.line)
 					
 					if type(retVal) == "number" then
 						for i=1,retVal do
-							self:interpret(v.body, printRetValues)
+							self:interpret(v.body, false)
 						end
 					elseif type(retVal) == "boolean" then
 						while retVal do
-							self:interpret(v.body, printRetValues)
+							self:interpret(v.body, false)
 							retVal = self:callFunction(v.condition.pkg, func, func.params, v.line)
 						end
 					end
+				else
+					error(v.line .. ": unknown statement type '" .. v.kind .. "'", 0)
 				end
 			end
 		end)
